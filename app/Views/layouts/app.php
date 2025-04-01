@@ -52,8 +52,9 @@
     </div>
 
     <!-- jQuery (necessary for AdminLTE and Bootstrap) -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
+    <script src="<?= base_url('assets/adminlte/plugins/jquery/jquery.min.js'); ?>"></script>
+    <!-- Bootstrap JS (needed for dropdowns) -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
     <!-- AdminLTE JS -->
     <script src="<?= base_url('assets/adminlte/dist/js/adminlte.min.js'); ?>"></script>
     

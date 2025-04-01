@@ -1,10 +1,10 @@
 <!-- Sidebar -->
-<aside class="main-sidebar sidebar-dark-primary elevation-4">
-            <a href="#" class="brand-link">
+<aside class="main-sidebar sidebar-light-primary">
+            <a href="#" class="brand-link bg-info">
                 <img src="<?= base_url('assets/adminlte/dist/img/AdminLTELogo.png'); ?>" alt="AdminLTE Logo" class="brand-image img-circle elevation-3">
                 <span class="brand-text font-weight-light">AdminLTE</span>
             </a>
-            <div class="sidebar">
+            <div class="sidebar border-right">
                 <!-- Sidebar menu -->
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
