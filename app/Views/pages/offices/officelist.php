@@ -38,14 +38,16 @@
                                     <tr>
                                         <th>Office Code</th>
                                         <th>Office Name</th>
-                                        <th>Actions</th>
+                                        <th>Directorate</th> <!-- New Column -->
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php foreach ($offices as $office): ?>
                                     <tr>
-                                        <td><?= esc($office['office_code']); ?></td>
-                                        <td><?= esc($office['office_name']); ?></td>
+                                        <td><?= esc($office['code']); ?></td>
+                                        <td><?= esc($office['name']); ?></td>
+                                        <td><?= esc($office['directorate_code']); ?></td> <!-- New Column Data -->
                                         <td>
                                             <a href="<?= base_url('offices/view/' . $office['id']) ?>" class="btn btn-info btn-sm"><i class="fas fa-eye"></i> View</a>
                                             <a href="<?= base_url('offices/edit/' . $office['id']) ?>" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Edit</a>
