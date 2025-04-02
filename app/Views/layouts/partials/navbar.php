@@ -1,4 +1,4 @@
-<nav class="main-header navbar navbar-expand navbar-info">
+<nav class="main-header navbar navbar-expand navbar-info fixed-top">
     <!-- Left Navbar -->
     <ul class="navbar-nav">
         <li class="nav-item">
