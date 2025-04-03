@@ -2,8 +2,9 @@
 
 namespace App\Controllers;
 
-use App\Controllers\BaseController;
+use App\Models\OfficeModel;
 use App\Models\DirectorateModel;
+use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
 
 class DirectorateController extends BaseController
@@ -50,5 +51,16 @@ class DirectorateController extends BaseController
         $directorate = $directorate_model->getDirectorate($id);
 
         return view("pages/directorates/directorateedit", ["directorate"=> $directorate]);
+    }
+
+    public function getOffices($directorateId)
+    {
+        $officeModel = new OfficeModel();
+        
+        // Get the offices related to the directorate
+        $offices = $officeModel->where('directorate_id', $directorateId)->findAll();
+
+        // Return the offices as a JSON response
+        return $this->response->setJSON(['offices' => $offices]);
     }
 }

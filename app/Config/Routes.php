@@ -10,7 +10,11 @@ use App\Controllers\DirectorateController;
  */
 
 $routes->get('register', [AuthController::class,'register']);
+$routes->post('register', [AuthController::class,'register']);
+
 $routes->get('login', [AuthController::class,'login']);
+$routes->post('login/authenticate', [AuthController::class,'authenticate']);
+$routes->get('directorates/getOffices/(:num)', [DirectorateController::class,'getOffices/$1']);
 
 $routes->get('dashboard', 'Home::index');
 $routes->get('users/create', 'Home::create');
@@ -23,3 +27,4 @@ $routes->get('directorates', [DirectorateController::class, 'index']);
 $routes->get('directorates/create', [DirectorateController::class, 'create']);
 $routes->post('directorates/store', [DirectorateController::class,'store']);
 $routes->get('directorates/edit/(:num)', [DirectorateController::class, 'edit']);
+

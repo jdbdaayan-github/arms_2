@@ -33,10 +33,9 @@
         <?= $this->renderSection('content'); ?>
     </div>
 
-    <!-- jQuery -->
     <script src="<?= base_url('assets/adminlte/plugins/jquery/jquery.min.js'); ?>"></script>
-    <!-- Bootstrap JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    <script src="<?= base_url('assets/adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js'); ?>"></script>
+
     <!-- AdminLTE JS -->
     <script src="<?= base_url('assets/adminlte/dist/js/adminlte.min.js'); ?>"></script>
 </body>
