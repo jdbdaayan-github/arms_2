@@ -1,14 +1,18 @@
 <?= $this->extend("layouts/auth"); ?>
 
+<?= $this->section('title') ?>
+    Register
+<?= $this->endSection() ?>
+
 <?= $this->section('content'); ?>
-<div class="register-box">
+<div class="register-box" style="width: 100%;">
     <div class="register-logo">
         <a href="<?= base_url(); ?>"><b>ARMS</b></a>
     </div>
 
     <div class="card shadow">
         <div class="card-body register-card-body">
-            <p class="text-center">Register new account</p>
+            <p class="login-box-msg mb-3">Register new account</p>
 
             <?php if (session()->getFlashdata('errors')) : ?>
                 <div class="alert alert-danger">
@@ -57,7 +61,6 @@
                     </div>
                 </div>
 
-                <!-- Directorate as Select Option -->
                 <div class="input-group mb-3">
                     <select name="directorate" id="directorate" class="form-control" required>
                         <option value="" disabled selected>Select Directorate</option>
@@ -72,7 +75,6 @@
                     </div>
                 </div>
 
-                <!-- Office as Select Option -->
                 <div class="input-group mb-3">
                     <select name="office" id="office" class="form-control" required>
                         <option value="" disabled selected>Select Office</option>
@@ -99,7 +101,7 @@
                 </div>
 
                 <div class="input-group mb-3">
-                    <input type="password" name="password" class="form-control" placeholder="Password" required>
+                    <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
                     <div class="input-group-append">
                         <div class="input-group-text"><i class="fas fa-lock"></i></div>
                     </div>
@@ -111,14 +113,13 @@
                         <div class="input-group-text"><i class="fas fa-lock"></i></div>
                     </div>
                 </div>
-
-                <div class="form-group text-center">
+                <div class="form-group text-center mt-4">
                     <button type="submit" class="btn btn-primary btn-block">
                         <i class="fas fa-user-plus"></i> Register
                     </button>
                 </div>
 
-                <p class="text-center">
+                <p class="text-center mt-3">
                     <a href="<?= base_url('login'); ?>">Already have an account?</a>
                 </p>
             </form>
@@ -145,7 +146,7 @@
                 data.offices.forEach(office => {
                     const option = document.createElement('option');
                     option.value = office.id;
-                    option.textContent = office.code;
+                    option.textContent = office.code + "-" + office.name;
                     officeSelect.appendChild(option);
                 });
             })

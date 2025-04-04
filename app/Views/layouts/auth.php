@@ -4,28 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>AdminLTE | Authentication</title>
+    <title>ARMS | <?= $this->renderSection('title')?></title>
     
     <!-- AdminLTE CSS -->
     <link rel="stylesheet" href="<?= base_url('assets/adminlte/dist/css/adminlte.min.css'); ?>">
     
     <!-- FontAwesome (Updated Version) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <link rel="stylesheet" href="<?= base_url('assets/adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css') ?>">
     
-    <style>
-        body {
-            background-color: #f4f6f9;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-        }
-        .auth-container {
-            width: 100%;
-            max-width: 400px;
-        }
-    </style>
+    <link rel="stylesheet" href="<?= base_url('assets/css/auth.css?v=' . time()) ?>">
 </head>
 
 <body class="hold-transition login-page">

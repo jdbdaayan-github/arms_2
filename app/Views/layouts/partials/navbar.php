@@ -13,7 +13,7 @@
         <!-- User Dropdown Menu -->
         <li class="nav-item dropdown">
             <a class="nav-link" data-toggle="dropdown" href="#">
-                <span class="text-white">June Delrey B. Da-ayan</span> <!-- Display username -->
+                <span class="text-white"><?= session()->get('user_name')?></span> <!-- Display username -->
             </a>
             <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right">
                 <a href="#" class="dropdown-item">

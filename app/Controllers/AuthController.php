@@ -5,94 +5,146 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Models\DirectorateModel;
 use App\Models\UserModel;
+use App\Models\UserRoleModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
 class AuthController extends BaseController
 {
     public function login()
     {
-            // Start session to store CAPTCHA word
-        session()->start();
-
         // Define CAPTCHA configurations
         $captcha_config = [
             'img_width' => 350,
             'img_height' => 50,
-            'word_length' => 6, // Number of characters in the CAPTCHA
+            'word_length' => 6,
             'font_size' => 24,
-            'img_path' => './assets/captcha/', // Store generated CAPTCHA image
-            'img_url' => base_url('/assets/captcha/'), // URL to access the CAPTCHA
-            'expiration' => 3600, // Set expiration for the CAPTCHA
+            'img_path' => './assets/captcha/',
+            'img_url' => base_url('/assets/captcha/'),
+            'expiration' => 3600,
         ];
 
-        // Generate CAPTCHA word
+        // ❌ Delete any old CAPTCHA image stored in the session
+        $old_captcha = session()->get('captcha_filename');
+        if ($old_captcha && file_exists($old_captcha)) {
+            unlink($old_captcha);
+        }
+
+        // Generate new CAPTCHA word
         $captcha_word = $this->generate_captcha_word($captcha_config['word_length']);
 
-        // Create CAPTCHA image
-        $captcha_image = $this->create_captcha_image($captcha_word, $captcha_config);
+        // Create new CAPTCHA image
+        $captcha_image_path = $this->create_captcha_image($captcha_word, $captcha_config);
 
-        // Save CAPTCHA word in the session for later verification
-        session()->set('captcha_word', $captcha_word);
-        return view("auth/login", ['captcha_image' => $captcha_image]);
+        // Store CAPTCHA word & filename in session
+        session()->set([
+            'captcha_word' => $captcha_word,
+            'captcha_filename' => $captcha_image_path
+        ]);
+
+        return view("auth/login", ['captcha_image' => $captcha_image_path]);
     }
 
-    // Generate random CAPTCHA word
     private function generate_captcha_word($length = 6)
-    {
-        $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-        $captcha_word = '';
-        for ($i = 0; $i < $length; $i++) {
-            $captcha_word .= $characters[rand(0, strlen($characters) - 1)];
-        }
-        return $captcha_word;
+{
+    $characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ123456789';
+    $captcha_word = '';
+
+    for ($i = 0; $i < $length; $i++) {
+        $captcha_word .= $characters[rand(0, strlen($characters) - 1)];
     }
 
-    // Create CAPTCHA image using GD and Arial font
+    return $captcha_word;
+}
+
+
+    // Create CAPTCHA image
     private function create_captcha_image($captcha_word, $config)
     {
-        $image = imagecreate($config['img_width'], $config['img_height']);
-        $background_color = imagecolorallocate($image, 240, 240, 240); // Light gray background
-        $text_color = imagecolorallocate($image, 0, 0, 0); // Black text color
+        $image = imagecreatetruecolor($config['img_width'], $config['img_height']);
 
-        // Path to Arial font (Make sure Arial.ttf is accessible)
+        $light_blue = imagecolorallocate($image, 240, 248, 255);
+        imagefill($image, 0, 0, $light_blue);
+
+        $text_color = imagecolorallocate($image, 0, 0, 0);
+        $line_color = imagecolorallocate($image, 160, 206, 232);
+
         $font_path = './assets/fonts/arial.ttf';
 
-        // Add random noise or lines (optional, for better security)
-        for ($i = 0; $i < 5; $i++) {
-            imageline($image, rand(0, $config['img_width']), rand(0, $config['img_height']), rand(0, $config['img_width']), rand(0, $config['img_height']), $text_color);
+        for ($i = 0; $i < 50; $i++) {
+            imageline($image, rand(0, $config['img_width']), rand(0, $config['img_height']), rand(0, $config['img_width']), rand(0, $config['img_height']), $line_color);
         }
 
-        // Write the CAPTCHA text in the image
-        imagettftext($image, $config['font_size'], rand(-5, 5), rand(10, 50), rand(30, 40), $text_color, $font_path, $captcha_word);
+        $x = 10;
+        for ($i = 0; $i < strlen($captcha_word); $i++) {
+            $angle = rand(-10, 10);
+            $y = rand(30, 40);
+            imagettftext($image, $config['font_size'], $angle, $x, $y, $text_color, $font_path, $captcha_word[$i]);
+            $x += $config['font_size'] + 2;
+        }
 
-        // Output the image
-        $captcha_image_path = $config['img_path'] . $captcha_word . '.png';
-        imagepng($image, $captcha_image_path); // Save image to file
-
-        // Free up memory
+        $captcha_image_path = $config['img_path'] . time() . '.png';
+        imagepng($image, $captcha_image_path);
         imagedestroy($image);
 
-        return $config['img_url'] . $captcha_word . '.png'; // Return URL of the CAPTCHA image
+        return $captcha_image_path;
     }
 
     public function authenticate()
     {
-        // Get the CAPTCHA word from the session
-        $captcha_word = session()->get('captcha_word');
+        $session = session();
+        $captcha_word = $session->get('captcha_word');
+        $captcha_filename = $session->get('captcha_filename');
+        $username = $this->request->getPost('username');
+        $password = $this->request->getPost('password');
+        $captcha_input = $this->request->getPost('captcha');
 
-        // Check if the CAPTCHA matches
-        if ($this->request->getPost('captcha') !== $captcha_word) {
-            // CAPTCHA is incorrect
-            session()->setFlashdata('errors', ['Incorrect CAPTCHA.']);
-            return redirect()->to('/login');
+        $userModel = new UserModel();
+        $userRoleModel = new UserRoleModel();
+
+        $user = $userModel->where('username', $username)->first();
+
+        if (!$user) {
+            return redirect()->to('/login')->with('errors', 'Invalid username or password.');
         }
-        // CAPTCHA is incorrect
-        session()->setFlashdata('success', ['Correct CAPTCHA.']);
-        return redirect()->to('/login');
 
-        // Continue with authentication
+        if ($user['login_attempts'] >= 3) {
+            return redirect()->to('/login')->with('errors', 'Your account is locked due to multiple failed login attempts. Contact the administrator.');
+        }
+
+        if ($user['verified'] == 0) {
+            return redirect()->to('/login')->with('errors', 'Your account has not been verified. Contact the administrator.');
+        }
+
+        if ($captcha_input !== $captcha_word) {
+            return redirect()->to('/login')->with('errors', 'Incorrect CAPTCHA.');
+        }
+
+        if (!password_verify($password, $user['password'])) {
+            $userModel->update($user['id'], ['login_attempts' => $user['login_attempts'] + 1]);
+            return redirect()->to('/login')->with('errors', 'Invalid username or password.');
+        }
+
+        $userModel->update($user['id'], ['login_attempts' => 0]);
+
+        $roles = $userRoleModel->getUserRoles($user['id']);
+        $userRoles = array_column($roles, 'role_name');
+
+        $session->set([
+            'user_id'   => $user['id'],
+            'user_name'  => $user['firstname']." ".$user['middlename']." ".$user['lastname'],
+            'roles'     => $userRoles,
+            'logged_in' => true
+        ]);
+
+        // Delete used CAPTCHA image
+        if ($captcha_filename && file_exists($captcha_filename)) {
+            unlink($captcha_filename);
+        }
+
+        $session->remove(['captcha_word', 'captcha_filename']);
+
+        return redirect()->to('/dashboard')->with('success', 'Login successful.');
     }
-
 
     public function register()
     {   
@@ -110,10 +162,9 @@ class AuthController extends BaseController
                 "password" => "required",
                 "confirm_password" => "required|matches[password]",
             ];
-            var_dump($rules);
-            if(!$this->validate($rules))
-            {
-                return redirect()->back()->withInput()->with("error", $this->validator->getErrors());
+
+            if (!$this->validate($rules)) {
+                return redirect()->back()->withInput()->with("errors", $this->validator->getErrors());
             }
 
             $data = [
@@ -123,24 +174,25 @@ class AuthController extends BaseController
                 "extension" => $this->request->getPost("extension"),
                 "office_id" => $this->request->getPost("office"),
                 "email" => $this->request->getPost("email"),
-                "username"=> $this->request->getPost("username"),
-                "password"=> password_hash($this->request->getPost("password"), PASSWORD_DEFAULT),
+                "username" => $this->request->getPost("username"),
+                "password" => password_hash($this->request->getPost("password"), PASSWORD_DEFAULT),
                 'status_id' => 1,
             ];
 
             $user_model = new UserModel();
-            $user_model->addUser($data);
-            return redirect()->to('login')->with("success","Register account successfully");
-
-
+            $user_model->insert($data);
+            return redirect()->to('/login')->with("success", "Account registered successfully.");
         }
-        $directorate_model = new DirectorateModel();
-        $directorates = $directorate_model->getDirectorates();
 
-        return view("auth/register",['directorates' => $directorates] );
+        $directorate_model = new DirectorateModel();
+        $directorates = $directorate_model->findAll();
+
+        return view("auth/register", ['directorates' => $directorates]);
     }
+
     public function logout()
     {
-        //
+        session()->destroy();
+        return redirect()->to('/login')->with('success', 'Logged out successfully.');
     }
 }

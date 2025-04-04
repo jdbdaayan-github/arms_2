@@ -8,10 +8,14 @@ class CreateDirectoratesTable extends Migration
 {
     public function up()
     {
+        // Create the 'directorates' table with timestamps
         $this->forge->addField([
-            'id'   => ['type' => 'INT', 'auto_increment' => true, 'unsigned' => true],
-            'code' => ['type' => 'VARCHAR', 'constraint' => '100'],
-            'name' => ['type' => 'VARCHAR', 'constraint' => '100'],
+            'id'            => ['type' => 'INT', 'constraint' => 11, 'unsigned' => true, 'auto_increment' => true],
+            'code'          => ['type' => 'VARCHAR', 'constraint' => '100'],
+            'name'          => ['type' => 'VARCHAR', 'constraint' => '100'],
+            'description'   => ['type' => 'TEXT', 'null' => true],  // Optional description for the directorate
+            'created_at'    => ['type' => 'DATETIME', 'null' => true],
+            'updated_at'    => ['type' => 'DATETIME', 'null' => true],
         ]);
         $this->forge->addPrimaryKey('id');
         $this->forge->createTable('directorates');
@@ -19,6 +23,7 @@ class CreateDirectoratesTable extends Migration
 
     public function down()
     {
+        // Drop the 'directorates' table
         $this->forge->dropTable('directorates');
     }
 }

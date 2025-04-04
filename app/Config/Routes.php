@@ -14,6 +14,7 @@ $routes->post('register', [AuthController::class,'register']);
 
 $routes->get('login', [AuthController::class,'login']);
 $routes->post('login/authenticate', [AuthController::class,'authenticate']);
+$routes->get('logout', [AuthController::class,'logout']);
 $routes->get('directorates/getOffices/(:num)', [DirectorateController::class,'getOffices/$1']);
 
 $routes->get('dashboard', 'Home::index');
