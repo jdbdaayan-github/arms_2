@@ -133,7 +133,7 @@ class AuthController extends BaseController
             'user_id'   => $user['id'],
             'user_name'  => $user['firstname']." ".$user['middlename']." ".$user['lastname'],
             'roles'     => $userRoles,
-            'logged_in' => true
+            'logged_in' => TRUE,
         ]);
 
         // Delete used CAPTCHA image
@@ -143,7 +143,7 @@ class AuthController extends BaseController
 
         $session->remove(['captcha_word', 'captcha_filename']);
 
-        return redirect()->to('/dashboard')->with('success', 'Login successful.');
+        return redirect()->to('users')->with('success', 'Login successful.');
     }
 
     public function register()

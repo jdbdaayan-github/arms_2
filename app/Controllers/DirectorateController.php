@@ -11,11 +11,43 @@ class DirectorateController extends BaseController
 {
     public function index()
     {
-        $directorates_model = new DirectorateModel();
-        $directorates = $directorates_model->getDirectorates();
 
-        return view("pages/directorates/directoratelist", ["directorates"=> $directorates]);
+        return view("pages/directorates/directoratelist");
     }
+
+    public function getDirectoratesData()
+    {
+        if ($this->request->isAJAX()) {
+            $directorateModel = new DirectorateModel();
+            $directorates = $directorateModel->getDirectorates();
+
+            $data = [];
+
+            foreach ($directorates as $dir) {
+                $actions = '
+                    <a href="' . base_url('directorates/view/' . $dir['id']) . '" class="btn btn-info btn-sm"><i class="fas fa-eye"></i> View</a>
+                    <a href="' . base_url('directorates/edit/' . $dir['id']) . '" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Edit</a>
+                    <button class="btn btn-danger btn-sm delete-btn" 
+                        data-directorate-id="' . $dir['id'] . '" 
+                        data-directorate-name="' . esc($dir['name']) . '">
+                        <i class="fas fa-trash-alt"></i> Delete
+                    </button>
+                ';
+
+                $data[] = [
+                    'code' => esc($dir['code']),
+                    'name' => esc($dir['name']),
+                    'actions' => $actions,
+                ];
+            }
+
+            return $this->response->setJSON(['data' => $data]);
+        }
+
+        // Not an AJAX request
+        return redirect()->back();
+    }
+
 
     public function create()
     {

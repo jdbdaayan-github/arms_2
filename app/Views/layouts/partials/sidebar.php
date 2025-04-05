@@ -1,6 +1,7 @@
 <?php
 $request = service('request');
 $segment = $request->getUri()->getSegment(1);
+$subSegment = $request->getUri()->getSegment(2);
 ?>
 
 <!-- Sidebar -->
@@ -35,13 +36,13 @@ $segment = $request->getUri()->getSegment(1);
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="<?= base_url('records/search') ?>" class="nav-link <?= ($segment == 'records' && $request->getUri()->getSegment(2) == 'search') ? 'active' : ''; ?>">
+                            <a href="<?= base_url('records/search') ?>" class="nav-link <?= ($segment == 'records' && $subSegment == 'search') ? 'active' : ''; ?>">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Advanced Search</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="<?= base_url('records/upload') ?>" class="nav-link <?= ($segment == 'records' && $request->getUri()->getSegment(2) == 'upload') ? 'active' : ''; ?>">
+                            <a href="<?= base_url('records/upload') ?>" class="nav-link <?= ($segment == 'records' && $subSegment == 'upload') ? 'active' : ''; ?>">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Upload Records</p>
                             </a>
@@ -53,8 +54,8 @@ $segment = $request->getUri()->getSegment(1);
                 <li class="nav-header">ADMINISTRATION</li>
 
                 <!-- Users Management -->
-                <li class="nav-item has-treeview <?= in_array($segment, ['users', 'roles']) ? 'menu-open' : ''; ?>">
-                    <a href="#" class="nav-link <?= in_array($segment, ['users', 'roles']) ? 'active' : ''; ?>">
+                <li class="nav-item has-treeview <?= in_array($segment, ['users', 'roles', 'permissions']) ? 'menu-open' : ''; ?>">
+                    <a href="#" class="nav-link <?= in_array($segment, ['users', 'roles', 'permissions']) ? 'active' : ''; ?>">
                         <i class="nav-icon fas fa-users"></i>
                         <p>Users Management <i class="right fas fa-angle-left"></i></p>
                     </a>
@@ -68,7 +69,13 @@ $segment = $request->getUri()->getSegment(1);
                         <li class="nav-item">
                             <a href="<?= base_url('roles') ?>" class="nav-link <?= ($segment == 'roles') ? 'active' : ''; ?>">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Manage Roles</p>
+                                <p>Roles</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?= base_url('permissions') ?>" class="nav-link <?= ($segment == 'permissions') ? 'active' : ''; ?>">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Permissions</p>
                             </a>
                         </li>
                     </ul>
@@ -91,11 +98,25 @@ $segment = $request->getUri()->getSegment(1);
                 </li>
 
                 <!-- Libraries -->
-                <li class="nav-item">
-                    <a href="<?= base_url('libraries') ?>" class="nav-link <?= ($segment == 'libraries') ? 'active' : ''; ?>">
+                <li class="nav-item has-treeview <?= in_array($segment, ['libraries']) ? 'menu-open' : ''; ?>">
+                    <a href="#" class="nav-link <?= ($segment == 'libraries') ? 'active' : ''; ?>">
                         <i class="nav-icon fas fa-book"></i>
-                        <p>Manage Libraries</p>
+                        <p>Manage Libraries <i class="right fas fa-angle-left"></i></p>
                     </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="<?= base_url('libraries') ?>" class="nav-link <?= ($segment == 'libraries' && $subSegment == '') ? 'active' : ''; ?>">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Libraries List</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?= base_url('libraries/status') ?>" class="nav-link <?= ($segment == 'libraries' && $subSegment == 'status') ? 'active' : ''; ?>">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Status</p>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
 
                 <!-- Activity Logs -->

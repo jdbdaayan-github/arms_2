@@ -5,31 +5,40 @@ use App\Controllers\UserController;
 use App\Controllers\OfficeController;
 use CodeIgniter\Router\RouteCollection;
 use App\Controllers\DirectorateController;
+use App\Controllers\PermissionController;
+use App\Controllers\RoleController;
 
 /**
  * @var RouteCollection $routes
  */
 
-$routes->get('register', [AuthController::class,'register']);
-$routes->post('register', [AuthController::class,'register']);
+// Auth Routes
+$routes->get('register', [AuthController::class, 'register']);
+$routes->post('register', [AuthController::class, 'register']);
+$routes->get('login', [AuthController::class, 'login']);
+$routes->post('login/authenticate', [AuthController::class, 'authenticate']); // Changed to make it simple
+$routes->get('logout', [AuthController::class, 'logout']);
 
-$routes->get('login', [AuthController::class,'login']);
-$routes->post('login/authenticate', [AuthController::class,'authenticate']);
-$routes->get('logout', [AuthController::class,'logout']);
-$routes->get('directorates/getOffices/(:num)', [DirectorateController::class,'getOffices/$1']);
+// Directorate Routes
+$routes->get('directorates/getOffices/(:num)', [DirectorateController::class, 'getOffices/$1']);
+$routes->get('directorates', [DirectorateController::class, 'index'], ['filter' => 'auth']);  // Protected by auth filter
+$routes->get('directorates/getDirectoratesData', [DirectorateController::class, 'getDirectoratesData'], ['filter' => 'auth']);  // Protected by auth filter
+$routes->get('directorates/create', [DirectorateController::class, 'create'], ['filter' => 'auth']);  // Protected by auth filter
+$routes->post('directorates/store', [DirectorateController::class, 'store'], ['filter' => 'auth']);  // Protected by auth filter
+$routes->get('directorates/edit/(:num)', [DirectorateController::class, 'edit'], ['filter' => 'auth']);  // Protected by auth filter
 
-$routes->get('dashboard', 'Home::index');
-$routes->get('users/create', 'Home::create');
+// Role Routes
+$routes->get('roles', [RoleController::class, 'index'], ['filter' => 'auth']);  // Protected by auth filter
+$routes->get('roles/getRolesData', [RoleController::class, 'getRolesData'], ['filter' => 'auth']);  // Protected by auth filter
 
-$routes->get('users', [UserController::class,'index']);
-$routes->get('users/getUsersData', [UserController::class,'getUsersData']);
+// Permission Routes
+$routes->get('permissions', [PermissionController::class,'index'], ['filter'=> 'auth']);
+$routes->get('permissions/getPermissionsData', [PermissionController::class,'getPermissionsData'], ['filter' => 'auth']); 
 
-$routes->get('offices', [OfficeController::class,'index']);
-$routes->get('offices/create', [OfficeController::class,'create']);
-$routes->post('offices/store', [OfficeController::class,'store']);
+// User Routes
+$routes->get('users', [UserController::class, 'index'], ['filter' => 'auth']);  // Protected by auth filter
+$routes->get('users/getUsersData', [UserController::class, 'getUsersData'], ['filter' => 'auth']);  // Protected by auth filter
+$routes->get('users/create', 'Home::create', ['filter' => 'auth']);  // Protected by auth filter
 
-$routes->get('directorates', [DirectorateController::class, 'index']);
-$routes->get('directorates/create', [DirectorateController::class, 'create']);
-$routes->post('directorates/store', [DirectorateController::class,'store']);
-$routes->get('directorates/edit/(:num)', [DirectorateController::class, 'edit']);
-
+// Dashboard Route
+$routes->get('dashboard', 'Home::index', ['filter' => 'auth']);  // Protected by auth filter
