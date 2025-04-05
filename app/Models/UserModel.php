@@ -21,7 +21,15 @@ class UserModel extends Model
 
     public function getUsers()
     {
-        return $this->findAll();
+
+        return $this->select('users.*, offices.code as office_code, statuses.name as status_name, GROUP_CONCAT(roles.role_name) as role_names')
+                    ->join('offices', 'offices.id = users.office_id')
+                    ->join('statuses', 'statuses.id = users.status_id')
+                    ->join('user_roles', 'user_roles.user_id = users.id')  // Join user_roles to link users to their roles
+                    ->join('roles', 'roles.id = user_roles.role_id')  // Join roles to fetch the role names
+                    ->groupBy('users.id')  // Group by user to ensure roles are combined for each user
+                    ->orderBy('lastname', 'asc')
+                    ->findAll();
     }
 
     public function getUserById($id)

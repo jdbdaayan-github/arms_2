@@ -1,6 +1,7 @@
 <?php
 
 use App\Controllers\AuthController;
+use App\Controllers\UserController;
 use App\Controllers\OfficeController;
 use CodeIgniter\Router\RouteCollection;
 use App\Controllers\DirectorateController;
@@ -19,6 +20,9 @@ $routes->get('directorates/getOffices/(:num)', [DirectorateController::class,'ge
 
 $routes->get('dashboard', 'Home::index');
 $routes->get('users/create', 'Home::create');
+
+$routes->get('users', [UserController::class,'index']);
+$routes->get('users/getUsersData', [UserController::class,'getUsersData']);
 
 $routes->get('offices', [OfficeController::class,'index']);
 $routes->get('offices/create', [OfficeController::class,'create']);
