@@ -11,7 +11,7 @@ class PermissionController extends BaseController
     {
         return view('pages/permissions/permissionlist');
     }
-
+    
     public function getPermissionsData()
     {
         $permissionModel = new PermissionModel();

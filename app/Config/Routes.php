@@ -31,6 +31,8 @@ $routes->get('directorates/edit/(:num)', [DirectorateController::class, 'edit'],
 // Role Routes
 $routes->get('roles', [RoleController::class, 'index'], ['filter' => 'auth']);  // Protected by auth filter
 $routes->get('roles/getRolesData', [RoleController::class, 'getRolesData'], ['filter' => 'auth']);  // Protected by auth filter
+$routes->get('roles/permissions/(:num)', [RoleController::class,'permissions'], ['filter'=> 'auth']);
+$routes->get('roles/getRolePermissions/(:num)', [RoleController::class,'getRolePermissions'], ['filter'=> 'auth']);
 
 // Permission Routes
 $routes->get('permissions', [PermissionController::class,'index'], ['filter'=> 'auth']);

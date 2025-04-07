@@ -14,4 +14,12 @@ class PermissionModel extends Model
     {
         return $this->findAll();
     }
+
+    public function getPermissionsForRole($role_id)
+    {
+        return $this->join('role_permissions', 'role_permissions.permission_id = permissions.id')
+                    ->where('role_permissions.role_id', $role_id)
+                    ->findAll();
+    }
+
 }

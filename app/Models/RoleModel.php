@@ -14,4 +14,6 @@ class RoleModel extends Model
     {
         return $this->orderBy('id', 'asc')->findAll();
     }
+
+    
 }
