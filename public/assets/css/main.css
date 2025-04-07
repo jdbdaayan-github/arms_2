@@ -1,3 +1,7 @@
+*
+{
+    font-size: 12PX;
+}
 .btn
 {
     border-radius: 0;
@@ -8,8 +12,17 @@
 }
 thead{
     background-color: #f5f6fa;
-    color: gray;
+    color: #4d4d57;
 }
 td{
-    color: #777777;
+    color: #4d4d57;
+}
+.brand-text
+{
+    font-size: larger;
+    padding: 5.5px !important;
+}
+.main-header
+{
+    padding: 4.5px !important;
 }

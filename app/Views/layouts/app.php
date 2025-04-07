@@ -32,7 +32,7 @@
         <!-- Sidebar -->
         <?= view('layouts/partials/sidebar'); ?>
 
-        <div class="content " style="padding-top: 55px;">
+        <div class="content " style="padding-top: 40px;">
             <?= $this->renderSection('content'); ?>
         </div>
 

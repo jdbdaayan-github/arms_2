@@ -7,9 +7,8 @@ $subSegment = $request->getUri()->getSegment(2);
 <!-- Sidebar -->
 <aside class="main-sidebar sidebar-light-primary">
     <!-- Brand Logo -->
-    <a href="<?= base_url('dashboard') ?>" class="brand-link bg-info">
-        <img src="<?= base_url('assets/adminlte/dist/img/AdminLTELogo.png'); ?>" alt="AdminLTE Logo" class="brand-image img-circle elevation-3">
-        <span class="brand-text font-weight-light">Archival System</span>
+    <a href="<?= base_url('dashboard') ?>" class="brand-link bg-info text-center p-2">
+        <span class="brand-text font-weight-light">ARMS</span>
     </a>
 
     <!-- Sidebar -->
