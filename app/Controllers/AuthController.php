@@ -143,7 +143,7 @@ class AuthController extends BaseController
 
         $session->remove(['captcha_word', 'captcha_filename']);
 
-        return redirect()->to('users')->with('success', 'Login successful.');
+        return redirect()->to('dashboard')->with('success', 'Welcome! '. $user['firstname']);
     }
 
     public function register()

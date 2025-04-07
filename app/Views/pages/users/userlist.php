@@ -37,7 +37,7 @@
                                 </div>
                             <?php endif; ?>
 
-                            <table class="table table-bordered table-striped" id="usersTable">
+                            <table class="table table-bordered table-hover" id="usersTable">
                                 <thead>
                                     <tr>
                                         <th>Full Name</th>
