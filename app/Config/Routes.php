@@ -18,6 +18,7 @@ $routes->post('register', [AuthController::class, 'register']);
 $routes->get('login', [AuthController::class, 'login']);
 $routes->post('login/authenticate', [AuthController::class, 'authenticate']); // Changed to make it simple
 $routes->get('logout', [AuthController::class, 'logout']);
+$routes->get('register/getOfficesbyID', [DirectorateController::class, 'getOfficesbyID']);
 
 // Directorate Routes
 $routes->get('directorates/getOffices/(:num)', [DirectorateController::class, 'getOffices/$1']);

@@ -85,14 +85,15 @@ class DirectorateController extends BaseController
         return view("pages/directorates/directorateedit", ["directorate"=> $directorate]);
     }
 
-    public function getOffices($directorateId)
+    public function getOfficesbyID()
     {
+        $directorateId = $this->request->getVar('directorate_id');
+    
+        // Assuming you have a model for offices
         $officeModel = new OfficeModel();
-        
-        // Get the offices related to the directorate
         $offices = $officeModel->where('directorate_id', $directorateId)->findAll();
-
-        // Return the offices as a JSON response
+    
+        // Return the offices as JSON
         return $this->response->setJSON(['offices' => $offices]);
     }
 }

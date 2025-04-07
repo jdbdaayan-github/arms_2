@@ -126,32 +126,36 @@
         </div>
     </div>
 </div>
+<?= $this->endSection(); ?>
 
+<?= $this->section('scripts') ?>
 <script>
-    // JavaScript to handle dynamic office options based on directorate
-    document.getElementById('directorate').addEventListener('change', function() {
-        let directorateId = this.value;
+    $(document).ready(function() {
+        // Trigger when directorate changes
+        $('#directorate').change(function() {
+            var directorateId = $(this).val();
+            if(directorateId) {
+                // AJAX request to fetch offices based on the selected directorate
+                $.ajax({
+                    url: '<?= base_url('register/getOfficesbyID'); ?>', // URL to get offices based on directorate
+                    type: 'GET',
+                    data: { directorate_id: directorateId },
+                    success: function(response) {
+                        var officeSelect = $('#office');
+                        officeSelect.empty(); // Clear previous options
+                        officeSelect.append('<option value="" disabled selected>Select Office</option>');
 
-        // Make an AJAX request to fetch offices based on directorate
-        fetch(`<?= base_url('directorates/getOffices'); ?>/${directorateId}`)
-            .then(response => response.json())
-            .then(data => {
-                // Get the office select element
-                const officeSelect = document.getElementById('office');
-                
-                // Clear previous office options
-                officeSelect.innerHTML = '<option value="" disabled selected>Select Office</option>';
-                
-                // Populate new office options based on the response
-                data.offices.forEach(office => {
-                    const option = document.createElement('option');
-                    option.value = office.id;
-                    option.textContent = office.code + "-" + office.name;
-                    officeSelect.appendChild(option);
+                        // Loop through the response to add new options
+                        $.each(response.offices, function(index, office) {
+                            officeSelect.append('<option value="' + office.id + '">' + office.code + '</option>');
+                        });
+                    }
                 });
-            })
-            .catch(error => console.error('Error fetching offices:', error));
+            } else {
+                // Reset office options if no directorate is selected
+                $('#office').empty().append('<option value="" disabled selected>Select Office</option>');
+            }
+        });
     });
 </script>
-
 <?= $this->endSection(); ?>
