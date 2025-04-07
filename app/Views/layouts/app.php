@@ -62,8 +62,5 @@
     <script src="<?= base_url('assets/adminlte/plugins/datatables-buttons/js/buttons.colVis.min.js'); ?>"></script>
         
     <?= $this->renderSection('scripts');?>
-
-    <!-- Additional JS -->
-    <?= isset($js) ? implode('', $js) : ''; ?>
 </body>
 </html>

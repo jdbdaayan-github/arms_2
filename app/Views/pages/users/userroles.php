@@ -6,12 +6,13 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Permission List</h1>
+                    <h1>User Roles</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="<?= base_url('dashboard') ?>">Home</a></li>
-                        <li class="breadcrumb-item active">Permissions</li>
+                        <li class="breadcrumb-item"><a href="<?= base_url('users') ?>">Users</a></li>
+                        <li class="breadcrumb-item active">User Roles</li>
                     </ol>
                 </div>
             </div>
@@ -24,10 +25,10 @@
                 <div class="col-12">
                     <div class="card shadow-sm" style="border-top: 3px solid #ddd;">
                         <div class="card-header d-flex justify-content-between align-items-center">
-                            <h3 class="card-title"><i class="fas fa-lock"></i> List of Permissions</h3>
-                            <a href="<?= base_url('permissions/create') ?>" class="btn btn-primary btn-md ml-auto" data-toggle="tooltip" title="Add a new permission">
-                                <i class="fas fa-plus-circle"></i> Add New
-                            </a>
+                            <h3 class="card-title"><i class="fas fa-user-tag"></i> User Roles</h3>
+                            <button class="btn btn-info btn-md ml-auto" data-toggle="modal" data-target="#addRoleModal">
+                                <i class="fas fa-plus"></i> Add Role
+                            </button>
                         </div>
                         <div class="card-body">
                             <?php if (session()->getFlashdata('success')): ?>
@@ -37,12 +38,11 @@
                                 </div>
                             <?php endif; ?>
 
-                            <table class="table table-bordered table-hover" id="permissionsTable">
+                            <table class="table table-bordered table-hover" id="rolesTable">
                                 <thead>
                                     <tr>
-                                        <th>Permission Name</th>
-                                        <th>Description</th>
-                                        <th class="text-center">Actions</th>
+                                        <th>Role Name</th>
+                                        <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -54,6 +54,37 @@
         </div>
     </section>
 </div>
+
+<!-- Add Role Modal -->
+<div class="modal fade" id="addRoleModal" tabindex="-1" role="dialog" aria-labelledby="addRoleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addRoleModalLabel">Add Role to User</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="addRoleForm" method="POST" action="<?= base_url('users/addRole/'.$user['id']) ?>">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="role">Select Role</label>
+                        <select name="role" id="role" class="form-control">
+                            <?php foreach ($roles as $role): ?>
+                                <option value="<?= $role['id']; ?>"><?= esc($role['role_name']); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-info">Add Role</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <?= $this->endSection(); ?>
 
 <?= $this->section('scripts'); ?>
@@ -61,39 +92,39 @@
 $(function () {
     $('[data-toggle="tooltip"]').tooltip();
 
-    $('#permissionsTable').DataTable({
+    $('#rolesTable').DataTable({
         responsive: true,
         lengthChange: true,
         autoWidth: false,
         ordering: true,
         pageLength: 10,
         ajax: {
-            url: '<?= base_url('permissions/getPermissionsData') ?>', // Ensure this matches the URL for your controller method
+            url: '<?= base_url('users/getRolesData/'.$user['id']) ?>', // Ensure this matches the URL for your controller method
             type: 'GET',
             dataSrc: 'data'  // Ensure this matches the structure of the returned JSON data
         },
         columns: [
-            { data: 'permission_name' },
-            { data: 'description' },
+            { data: 'role' },
             { data: 'actions', orderable: false, searchable: false }
         ],
         columnDefs: [
-            { targets: [2], className: 'text-center' }  // Center the Actions column (index 3)
+            { targets: [1], className: 'text-center' }  // Center the Actions column (index 1)
         ],
         buttons: ['copy', 'excel', 'pdf', 'print', 'colvis']
-    }).buttons().container().appendTo('#permissionsTable_wrapper .col-md-6:eq(0)');
+    }).buttons().container().appendTo('#rolesTable_wrapper .col-md-6:eq(0)');
 
     // Handle the delete button click
     $(document).on('click', '.delete-btn', function (e) {
         e.preventDefault();
-        var permissionId = $(this).data('id');
-        var permissionName = $(this).data('permission_name');
+        var roleId = $(this).data('role-id');
+        var roleName = $(this).data('role-name');
+        var userId = $(this).data('user-id');
 
-        // Set the name of the permission to be deleted in the modal
-        $('#deletePermissionName').text(permissionName);
+        // Set the name of the role to be deleted in the modal
+        $('#deleteRoleName').text(roleName);
 
         // Set the URL of the delete button
-        $('#confirmDeleteBtn').attr('href', '<?= base_url('permissions/delete/') ?>' + permissionId);
+        $('#confirmDeleteRoleBtn').attr('href', '<?= base_url('users/deleteRole/') ?>' + userId +'/'+ roleId);
 
         // Show the modal
         $('#deleteModal').modal('show');
@@ -106,20 +137,21 @@ $(function () {
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Role Remove</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <p>Are you sure you want to delete this permission?</p>
-                <p id="deletePermissionName"></p> <!-- Display permission name for confirmation -->
+                <p>Are you sure you want to remove this role from the user?</p>
+                <p id="deleteRoleName"></p> <!-- Display role name for confirmation -->
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <a href="" id="confirmDeleteBtn" class="btn btn-info">Delete</a>
+                <a href="" id="confirmDeleteRoleBtn" class="btn btn-info">Remove</a>
             </div>
         </div>
     </div>
 </div>
+
 <?= $this->endSection(); ?>

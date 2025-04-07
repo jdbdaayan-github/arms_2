@@ -41,4 +41,13 @@ class UserModel extends Model
     {
         return $this->insert($data);
     }
+
+    public function getUserRoles($id)
+    {
+        return $this->select('users.*,roles.role_name as role_names')
+                    ->join('user_roles', 'user_roles.user_id = users.id')
+                    ->join('roles', 'roles.id = user_roles.role_id')
+                    ->where('id', $id)
+                    ->findAll();
+    }
 }

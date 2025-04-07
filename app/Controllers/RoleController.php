@@ -25,12 +25,14 @@ class RoleController extends BaseController
             $data[] = [
                 'role_name' => $role['role_name'],
                 'description' => $role['description'],  // Assuming you have a description column
-                'actions' => '<button class="btn btn-sm btn-primary edit-btn" data-id="' . $role['id'] . '" data-toggle="tooltip" title="Edit Role">
-                 <i class="fas fa-edit"></i>
-               </button>
-               <button class="btn btn-sm btn-danger delete-btn" data-id="' . $role['id'] . '" data-name="' . $role['role_name'] . '" data-toggle="tooltip" title="Delete Role">
-                 <i class="fas fa-trash-alt"></i>
-               </button>',
+                'actions' => 
+                    '<button class="btn btn-sm btn-primary edit-btn" data-id="' . $role['id'] . '" data-toggle="tooltip" title="Edit Role">
+                        <i class="fas fa-edit"></i> Edit
+                    </button> '
+                    . (in_array('Superadmin', session()->get('roles')) ? 
+                        ' <button class="btn btn-sm btn-danger delete-btn" data-id="' . $role['id'] . '" data-name="' . $role['role_name'] . '" data-toggle="tooltip" title="Delete Role">
+                            <i class="fas fa-trash-alt"></i> Delete
+                        </button>' : '')
             ];
         }
 

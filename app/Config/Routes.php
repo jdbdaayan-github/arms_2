@@ -40,6 +40,12 @@ $routes->get('permissions/getPermissionsData', [PermissionController::class,'get
 $routes->get('users', [UserController::class, 'index'], ['filter' => 'auth']);  // Protected by auth filter
 $routes->get('users/getUsersData', [UserController::class, 'getUsersData'], ['filter' => 'auth']);  // Protected by auth filter
 $routes->get('users/create', 'Home::create', ['filter' => 'auth']);  // Protected by auth filter
+$routes->get('users/roles/(:num)',[UserController::class, 'roles'], ['filter' => 'auth']);
+$routes->get('users/getRolesData/(:num)',[UserController::class, 'getRolesData'], ['filter' => 'auth']);
+$routes->get('users/roles/(:num)', [UserController::class, 'roles'], ['filter' => 'auth']);
+$routes->post('users/addRole/(:num)', [UserController::class, 'addRoleToUser'], ['filter' => 'auth']);
+$routes->get('users/deleteRole/(:num)/(:num)', [UserController::class, 'deleteRole'], ['filter' => 'auth']);
+
 
 // Dashboard Route
 $routes->get('dashboard', 'Home::index', ['filter' => 'auth']);  // Protected by auth filter

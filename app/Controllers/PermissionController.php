@@ -23,8 +23,13 @@ class PermissionController extends BaseController
             $data[] = [
                 'permission_name' => $permission['permission_name'],
                 'description' => $permission['description'],
-                'actions' => '<a href="' . base_url('permissions/edit/' . $permission['id']) . '" class="btn btn-warning btn-sm">Edit</a>
-                              <button class="btn btn-danger btn-sm delete-btn" data-permission-id="' . $permission['id'] . '" data-permission-name="' . $permission['permission_name'] . '">Delete</button>'
+                'actions' => 
+                    '<a href="' . base_url('permissions/edit/' . $permission['id']) . '" class="btn btn-primary btn-sm">
+                        <i class="fas fa-edit"></i> Edit
+                    </a> 
+                    <button class="btn btn-danger btn-sm delete-btn" data-permission-id="' . $permission['id'] . '" data-permission-name="' . $permission['permission_name'] . '">
+                        <i class="fas fa-trash-alt"></i> Delete
+                    </button>'
             ];
         }
 
